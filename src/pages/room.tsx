@@ -1,8 +1,23 @@
 import { useParams } from "react-router-dom";
 import amaLogo from "../assets/ama-logo.svg";
-import { Share2 } from "lucide-react";
+import { ArrowRight, ArrowUp, Share2 } from "lucide-react";
+import { toast } from "sonner";
+import { Message } from "../components/message";
 export function Room() {
   const { roomId } = useParams();
+
+  function handleShareRoom(){
+    //trazer url actual
+    const url = window.location.href.toString()
+
+    if (navigator.share != undefined && navigator.canShare()) {
+        navigator.share({url})        
+    } else {
+        navigator.clipboard.writeText(url)
+
+        toast.info('The room URL was copied!')
+    }
+  }
 
   console.log(roomId);
   return (
@@ -15,17 +30,55 @@ export function Room() {
         </span>
         <button
           type="submit"
+          onClick={handleShareRoom}
           className="bg-zinc-800 text-zinc-300
-                    px-3 py-1.5 gap-1.5 flex items-center rounded-lg
-                    font-medium text-sm hover:bg-zinc-700 transition-colors">
+                    px-3 py-1.5 gap-1.5 flex items-center rounded-lg ml-auto
+                    font-medium text-sm hover:bg-zinc-700 transition-colors"
+        >
           Compartilhar
           <Share2 className="size-4" />
         </button>
       </div>
 
-      <div>
-        
-      </div>
+      <div className="h-px w-full bg-zinc-900" />
+
+      <form
+        // onSubmit={handleCreateRoom}
+        className="flex items-center gap-2 bg-zinc-900 p-2 rounded-xl border border-zinc-800 
+         ring-orange-400 ring-offset-2 ring-offset-orange-950 focus-within:ring-1 transition-all"
+      >
+        <input
+          type="text"
+          name="theme"
+          placeholder="Qual é a sua pergunta?"
+          className="flex-1 text-sm bg-transparent mx-2 outline-none text-zinc-100 placeholder:text-zinc-500"
+          autoComplete="off"
+        />
+
+        <button
+          type="submit"
+          className="bg-orange-400 text-orange-950
+                    px-3 py-1.5 gap-1.5 flex items-center rounded-lg
+                    font-medium text-sm hover:bg-orange-500 transition-colors"
+        >
+          Criar pergunta
+          <ArrowRight className="size-4" />
+        </button>
+      </form>
+
+      <ol className="list-decimal list-outsidex px-3 space-y-8 ">
+       {/* message */}
+       <Message/>
+
+        <li className="mx-4 leading-relaxed text-zinc-100">
+          O que é GoLang e quais são suas principais vantagens em comparação com
+          outras linguagens de programação como Python, Java ou C++?
+          <button type="button" className="mt-3 flex items-center gap-2 text-zinc-400 hover:text-zinc-300 text-sm font-mediu">
+            <ArrowUp className="size-4"/>
+            Gostar da pergunta (808)
+            </button>
+        </li>
+      </ol>
     </div>
   );
 }
